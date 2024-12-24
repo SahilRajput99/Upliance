@@ -4,106 +4,147 @@
 
 This project aims to analyze and visualize user behaviors, cooking sessions, and order patterns. The analysis identifies relationships between cooking session participation and order trends, explores demographic factors influencing user activity, and highlights popular dishes and meal types. The insights provide actionable recommendations for improving business operations and customer satisfaction.
 
-### Data Overview
+### Datasets:
 
-The project involves the following datasets:
+####  Order Details Table:
+- Columns: Order ID, User ID, Order Date, Meal Type, Dish Name, Order Status, Amount (USD), Time of Day, Rating, Session ID
+- Provides information about user orders, meal preferences, and order status.
 
-### 1. OrderDetails.csv
+#### Cooking Sessions Table:
 
-#### Columns:
+- Columns: Session ID, User ID, Dish Name, Meal Type, Session Start, Session End, Duration (mins), Session Rating
+- Details the cooking sessions, including duration, user participation, and session ratings.
 
-Order ID
+#### User Details Table:
+- Columns: User ID, User Name, Age, Location, Registration Date, Phone, Email, Favorite Meal, Total Orders
+Contains demographic information about users
 
-User ID
+### Data Cleaning and Preparation
 
-Order Date
+#### 1. Handling Missing Values
 
-Meal Type
+- Rating: Replaced missing (N/A) values in the "Rating" column with Blanks for calculations and analysis.
+- Session Rating: Checked for consistency and ensured missing ratings were treated as neutral or zero.
+  
+#### 2. Data Type Adjustments
+- Converted dates to the appropriate datetime format for accurate sorting and time-based analysis.
+- Changed numeric fields (e.g., Amount, Session Rating) to numeric data types for aggregation.
 
-Dish Name
+#### 3. Duplicate Removal
+- Checked for duplicate entries in all datasets and removed redundant rows to ensure data consistency.
 
-Order Status
+#### 4. Data Validation
+- Cross-verified the relationships between tables using primary and foreign keys:
+- Matched User ID across all three tables.
+- Matched Session ID in the Order Details and Cooking Sessions tables.
+  
+### New Measures and Calculated Columns
 
-Amount (USD)
+#### Calculated Columns
 
-Time of Day
+``` Session-Order Match = 
+IF(
+    ISBLANK(OrderDetails[Session ID]),
+    "False",
+    "True"
+)```
 
-Rating
+``` Session-Order Time Gap = 
+DATEDIFF(
+    RELATED(CookingSessions[Session End]), 
+    OrderDetails[Order Date], 
+    MINUTE
+) ```
 
-Session ID
+``` Dish Popularity Rank = 
+RANKX(
+    ALL(OrderDetails[Dish Name]), 
+    CALCULATE(COUNT(OrderDetails[Order ID])), 
+    , 
+    DESC
+) ```
 
-### 2. CookingSessions.csv
+```Age_Group = 
+SWITCH(
+    TRUE(),
+    UserDetails[Age] >= 18 && UserDetails[Age] <= 25, "18-25",
+    UserDetails[Age] >= 26 && UserDetails[Age] <= 35, "26-35",
+    UserDetails[Age] >= 36 && UserDetails[Age] <= 45, "36-45",
+    UserDetails[Age] > 45, "46+",
+    "Unknown"
+)```
 
-#### Columns:
+#### Measures:
 
-Session ID
+Order Frequency:
 
-User ID
+Formula: COUNTROWS(Order ID grouped by User ID)
+Captures how often a user places an order.
+Dish Popularity:
 
-Dish Name
+Formula: COUNT(Dish Name)
+Tracks the frequency of each dish being ordered.
+Measures
+Total Orders:
 
-Meal Type
+Formula: SUM(Order Status Indicator)
+Calculates the total completed orders.
+Average Session Rating:
 
-Session Start
+Formula: AVERAGE(Session Rating)
+Provides insights into user satisfaction with cooking sessions.
+Total Revenue:
 
-Session End
+Formula: SUM(Amount)
+Shows total earnings from completed orders.
+Average Order Value:
 
-Duration (mins)
+Formula: SUM(Amount) / COUNT(Order ID)
+Calculates the average revenue per order.
+Retention Rate:
 
-Session Rating
+Formula: (Active Users in Last 30 Days) / Total Users
+Indicates user engagement over time.
+Visualizations
+Key Visuals in Power BI
+Total Orders by User (Bar Chart):
 
-### 3. UserDetails.csv
+Illustrates order frequency per user.
+Revenue Over Time (Line Chart):
 
-#### Columns:
+Tracks revenue trends based on order dates.
+Dish Popularity (Pie Chart):
 
-User ID
+Highlights the most frequently ordered dishes.
+User Engagement (Stacked Bar Chart):
 
-User Name
+Combines session ratings and order counts to evaluate user engagement.
+Demographics and Meal Preferences (Clustered Bar Chart):
 
-Age
+Explores correlations between age, location, and favorite meal types.
+Findings
+User Engagement
+Users with higher session participation (e.g., Alice, Charlie) place more orders, highlighting the connection between engagement and revenue.
+Meal Preferences
+Dinner is the most preferred meal type, with Spaghetti and Grilled Chicken as the top dishes.
+Breakfast and lunch orders are less frequent but favored by specific age groups.
+Demographics
+Younger users prefer dinner, while older users lean toward breakfast or lunch.
+Urban areas like New York and Chicago show diverse meal preferences.
+Business Recommendations
+Enhance User Retention
 
-Location
+Implement loyalty programs targeting users with high order frequency and session participation.
+Focus Marketing on Popular Dishes
 
-Registration Date
+Promote dishes like Spaghetti and Grilled Chicken, offering discounts to drive repeat orders.
+Age-Based Campaigns
 
-Phone
+Tailor marketing campaigns for different age groups. For instance, dinner promotions for younger users and breakfast deals for older users.
+Region-Specific Offers
 
-Email
+Develop location-based campaigns to cater to regional preferences.
+Improve Cooking Sessions
 
-Favorite Meal
+Increase session duration for popular dishes and enhance user satisfaction by addressing feedback.
 
-Total Orders
-
-### Data Cleaning and Transformation
-
-To ensure the datasets were ready for analysis, the following data cleaning and transformation steps were performed:
-
-#### Handling Missing Values:
-
-- Missing values in the Rating column were replaced with 0 to maintain numeric integrity.
-
-- Missing values in non-numeric fields (if any) were handled using appropriate placeholder values or were removed if irrelevant.
-
-#### Merging Datasets:
-
-- The datasets were merged using common columns:
-
-User ID: To link user details with orders and cooking sessions.
-
-Session ID: To establish relationships between cooking sessions and orders.
-
-#### Derived Columns:
-
-- Session Duration: Calculated as the difference between Session Start and Session End.
-
-- Order Frequency: Aggregated orders per user over specific time periods.
-
-- Dish Popularity: Counted the number of times each dish appeared in completed orders.
-
-- Average Session Rating per User: Computed as the mean of session ratings for each user.
-
-#### Data Type Corrections:
-
-- Ensured that date fields (e.g., Order Date, Session Start, Session End) were correctly formatted as datetime objects.
-
-- Converted categorical fields like Meal Type and Order Status to appropriate data types for analysis.
