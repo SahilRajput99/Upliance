@@ -175,83 +175,147 @@ Meal Type Distribution:
 Meal Type Frequency = 
 COUNTROWS(OrderDetails)
 ```
+Total Orders
 
-Relationships
-Ensure the following relationships are established in Power BI:
+```
+Total Orders = COUNT(OrderDetails[Order ID])
+```
 
-UserDetails[User ID] ↔ OrderDetails[User ID] (One-to-Many).
-UserDetails[User ID] ↔ CookingSessions[User ID] (One-to-Many).
-CookingSessions[Session ID] 
+Total Revenue
 
-Order Frequency:
+```
+Total Revenue = Sum(OrderDetails[Amount (USD)])
+```
 
-Formula: COUNTROWS(Order ID grouped by User ID)
-Captures how often a user places an order.
-Dish Popularity:
+### Visualizations
 
-Formula: COUNT(Dish Name)
-Tracks the frequency of each dish being ordered.
-Measures
-Total Orders:
+#### 1. Overview Dashboard
 
-Formula: SUM(Order Status Indicator)
-Calculates the total completed orders.
-Average Session Rating:
+#### Visuals:
 
-Formula: AVERAGE(Session Rating)
-Provides insights into user satisfaction with cooking sessions.
-Total Revenue:
+Key Metrics (Card Visuals):
+Conversion Rate
+Total Revenue (SUM of OrderDetails[Amount (USD)])
+Total Orders (COUNT of OrderDetails[Order ID])
+Average Session Rating
 
-Formula: SUM(Amount)
-Shows total earnings from completed orders.
-Average Order Value:
+#### Purpose:
+To provide a quick summary of the business performance.
 
-Formula: SUM(Amount) / COUNT(Order ID)
-Calculates the average revenue per order.
-Retention Rate:
+#### 2. Popular Dishes and Meal Types
 
-Formula: (Active Users in Last 30 Days) / Total Users
-Indicates user engagement over time.
-Visualizations
-Key Visuals in Power BI
-Total Orders by User (Bar Chart):
+#### Visuals:
+Dish Popularity (Bar Chart):
 
-Illustrates order frequency per user.
-Revenue Over Time (Line Chart):
+Axis: Dish Name
+Values: Count of Dish Name (Frequency in Orders)
+Revenue by Dish (Column Chart):
 
-Tracks revenue trends based on order dates.
-Dish Popularity (Pie Chart):
+Axis: Dish Name
+Values: Revenue per Dish
+Meal Type Distribution (Pie or Donut Chart):
 
-Highlights the most frequently ordered dishes.
-User Engagement (Stacked Bar Chart):
+Values: Meal Type Frequency
+Legend: Meal Type
 
-Combines session ratings and order counts to evaluate user engagement.
-Demographics and Meal Preferences (Clustered Bar Chart):
+#### Purpose:
+Identify which dishes and meal types are most popular and generate the highest revenue.
 
-Explores correlations between age, location, and favorite meal types.
-Findings
-User Engagement
-Users with higher session participation (e.g., Alice, Charlie) place more orders, highlighting the connection between engagement and revenue.
-Meal Preferences
-Dinner is the most preferred meal type, with Spaghetti and Grilled Chicken as the top dishes.
-Breakfast and lunch orders are less frequent but favored by specific age groups.
-Demographics
-Younger users prefer dinner, while older users lean toward breakfast or lunch.
-Urban areas like New York and Chicago show diverse meal preferences.
-Business Recommendations
-Enhance User Retention
+#### 3. Demographics
 
-Implement loyalty programs targeting users with high order frequency and session participation.
-Focus Marketing on Popular Dishes
+#### Visuals:
 
-Promote dishes like Spaghetti and Grilled Chicken, offering discounts to drive repeat orders.
-Age-Based Campaigns
+Orders by Age Group (Stacked Column Chart):
 
-Tailor marketing campaigns for different age groups. For instance, dinner promotions for younger users and breakfast deals for older users.
-Region-Specific Offers
+Axis: Age Group
+Values: Order Count by Demographic Group
+Legend: Meal Type (Optional)
+Revenue by Location (Map Visual):
 
-Develop location-based campaigns to cater to regional preferences.
-Improve Cooking Sessions
+Location: UserDetails[Location]
+Size: Total Revenue
 
-Increase session duration for popular dishes and enhance user satisfaction by addressing feedback.
+#### Purpose:
+Understand how demographics influence orders and revenue.
+
+#### 4. Cooking Sessions
+
+#### Visuals:
+Session Ratings by Dish (Scatter Chart):
+
+X-Axis: Dish Name
+Y-Axis: Average Session Rating
+Size: Session Frequency
+Average Session Duration by Meal Type (Bar Chart):
+
+Axis: Meal Type
+Values: Average(Session Duration)
+
+#### Purpose:
+
+Analyze cooking session performance and identify trends in session ratings and durations.
+
+#### 5. Conversion Analysis
+
+#### Visuals:
+Conversion Rate by Meal Type (Clustered Bar Chart):
+
+Axis: Meal Type
+Values: Conversion Rate
+Session-Order Time Gap (Line Chart):
+
+X-Axis: Order Date
+Values: Average(Session-Order Time Gap)
+
+#### Purpose:
+Evaluate how effectively cooking sessions lead to orders and assess time-related factors.
+
+#### 6. Revenue Insights
+
+#### Visuals:
+Revenue by Age Group (Tree Map):
+
+Group: Age Group
+Values: Revenue
+Daily Revenue Trend (Line Chart):
+
+X-Axis: Order Date
+Values: Total Revenue
+
+#### Purpose:
+Track revenue performance and identify high-performing customer groups.
+
+#### 7. Drill-Down Analysis
+
+#### Visuals:
+Dish Performance by Time of Day (Matrix or Table):
+
+Rows: Dish Name
+Columns: Time of Day
+Values: Count of Orders, Average Rating
+Detailed User Behavior (Table Visual):
+
+Columns: User Name, Location, Total Orders, Favorite Meal, Total Revenue
+
+#### Purpose:
+Provide granular details about dish performance and individual user behavior.
+
+#### 8. Slicers:
+
+- By Age Group
+- By Location
+- By Meal Type
+
+#### 9. User Engagement Analysis
+
+#### Visual: Clustered Bar and Line Chart (Combo Chart)
+X-Axis: User Name
+Line Values: Average Session Rating
+Bar Values: Total Orders
+
+#### Purpose:
+
+- To compare user engagement in terms of the number of orders placed against their average cooking session rating.
+- Identify highly engaged users with high ratings or potential users to target for improved engagement.
+
 
