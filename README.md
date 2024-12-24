@@ -42,29 +42,36 @@ Contains demographic information about users
 
 #### Calculated Columns
 
-``` Session-Order Match = 
+```
+Session-Order Match = 
 IF(
     ISBLANK(OrderDetails[Session ID]),
     "False",
     "True"
-)```
+)
+```
 
-``` Session-Order Time Gap = 
+```
+Session-Order Time Gap = 
 DATEDIFF(
     RELATED(CookingSessions[Session End]), 
     OrderDetails[Order Date], 
     MINUTE
-) ```
+)
+```
 
-``` Dish Popularity Rank = 
+```
+Dish Popularity Rank = 
 RANKX(
     ALL(OrderDetails[Dish Name]), 
     CALCULATE(COUNT(OrderDetails[Order ID])), 
     , 
     DESC
-) ```
+)
+```
 
-```Age_Group = 
+```
+Age_Group = 
 SWITCH(
     TRUE(),
     UserDetails[Age] >= 18 && UserDetails[Age] <= 25, "18-25",
@@ -72,7 +79,8 @@ SWITCH(
     UserDetails[Age] >= 36 && UserDetails[Age] <= 45, "36-45",
     UserDetails[Age] > 45, "46+",
     "Unknown"
-)```
+)
+```
 
 #### Measures:
 
