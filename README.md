@@ -84,6 +84,105 @@ SWITCH(
 
 #### Measures:
 
+```
+Conversion Rate = 
+DIVIDE(
+    COUNTROWS(FILTER('OrderDetails', 'OrderDetails'[Order Status] = "Completed")),
+    COUNTROWS('CookingSessions'),
+    0
+) * 100
+```
+
+Average Session Rating for Completed Orders:
+
+```
+Avg Session Rating = 
+AVERAGEX(
+    FILTER('OrderDetails', 'OrderDetails'[Order Status] = "Completed"), 
+    RELATED('CookingSessions'[Session Rating])
+)
+```
+
+Dish Frequency (Sessions):
+
+```
+Dish Frequency (Sessions) = 
+COUNTROWS(CookingSessions)
+```
+
+Dish Frequency (Orders):
+
+```
+Dish Frequency (Orders) = 
+COUNTROWS(OrderDetails)
+```
+
+Revenue per Dish:
+
+```
+Revenue per Dish = 
+SUMX(
+    VALUES(OrderDetails[Dish Name]), 
+    SUM(OrderDetails[Amount (USD)])
+)
+```
+
+Order Count by Demographic Group (e.g., by Age Group):
+
+```
+Orders by Age_Group = 
+COUNTROWS(
+    FILTER(
+        OrderDetails, 
+        RELATED(UserDetails[Age_Group])  = "26-35" -- Replace with specific Age Group
+    )
+)
+```
+
+Lifetime Value (LTV):
+
+```
+LTV = 
+SUMX(
+    RELATEDTABLE(OrderDetails), 
+    OrderDetails[Amount (USD)]
+)
+```
+
+Average Session Rating by Demographic:
+
+```
+Avg Session Rating by Demographic = 
+AVERAGEX(
+    RELATEDTABLE(CookingSessions), 
+    CookingSessions[Session Rating]
+)
+```
+
+Revenue per Meal Type:
+
+```
+Revenue per Meal Type = 
+SUMX(
+    VALUES(OrderDetails[Meal Type]), 
+    SUM(OrderDetails[Amount (USD)])
+)
+```
+
+Meal Type Distribution:
+
+```
+Meal Type Frequency = 
+COUNTROWS(OrderDetails)
+```
+
+Relationships
+Ensure the following relationships are established in Power BI:
+
+UserDetails[User ID] ↔ OrderDetails[User ID] (One-to-Many).
+UserDetails[User ID] ↔ CookingSessions[User ID] (One-to-Many).
+CookingSessions[Session ID] 
+
 Order Frequency:
 
 Formula: COUNTROWS(Order ID grouped by User ID)
